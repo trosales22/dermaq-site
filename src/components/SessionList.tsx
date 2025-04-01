@@ -38,7 +38,14 @@ const SessionList: React.FC = () => {
             </h2>
             <p className="text-lg mt-2">{item?.attributes?.description}</p>
             <p className="text-sm font-semibold text-gray-200 mt-4">🧑‍🤝‍🧑 Max Slots: <span className="font-bold text-white">{item?.attributes?.max_slots}</span></p>
-            <button className="mt-4 btn btn-outline btn-white hover:bg-white hover:text-black transition">Reserve Slot</button>
+            <button 
+              className="mt-4 btn btn-outline btn-white hover:bg-white hover:text-black transition"
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+            >
+              Reserve Slot
+            </button>
           </div>
         </div>
       ))}
