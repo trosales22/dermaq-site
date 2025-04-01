@@ -1,19 +1,44 @@
+import { useListClinicSession } from 'hooks/clinic-session';
 import React from 'react';
-
-const sessions = [
-  { id: 1, title: 'Session 1: Skin Care Basics', description: 'Learn about skin care fundamentals.' },
-  { id: 2, title: 'Session 2: Anti-Aging Tips', description: 'Tips for fighting signs of aging.' },
-  { id: 3, title: 'Session 3: Acne Solutions', description: 'Effective acne treatments.' },
-];
+import { useNavigate } from 'react-router-dom';
 
 const SessionList: React.FC = () => {
+  const navigate = useNavigate();
+  const { data: response, isLoading, isError }: any = useListClinicSession({})
+  const list = response?.data?.data || []; 
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-64 text-red-500 text-lg font-semibold">
+        ❌ Failed to load sessions. Please try again later.
+      </div>
+    );
+  }
+
   return (
     <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {sessions.map((session) => (
-        <div key={session.id} className="card bg-base-100 shadow-xl">
-          <div className="card-body text-black">
-            <h2 className="card-title">{session.title}</h2>
-            <p>{session.description}</p>
+      {list.map((item: any) => (
+        <div 
+          key={item.id} 
+          className="card bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer"
+          onClick={() => navigate(`/sessions/${item?.attributes?.refno}`)}
+        >
+          <div className="card-body p-6">
+            <h2 className="card-title text-xl font-bold flex items-center gap-2">
+              <span className="bg-white text-black px-2 py-1 rounded-md">[{item?.attributes?.refno}]</span>
+              {item?.attributes?.title}
+            </h2>
+            <p className="text-lg mt-2">{item?.attributes?.description}</p>
+            <p className="text-sm font-semibold text-gray-200 mt-4">🧑‍🤝‍🧑 Max Slots: <span className="font-bold text-white">{item?.attributes?.max_slots}</span></p>
+            <button className="mt-4 btn btn-outline btn-white hover:bg-white hover:text-black transition">Reserve Slot</button>
           </div>
         </div>
       ))}

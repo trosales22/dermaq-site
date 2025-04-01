@@ -1,7 +1,11 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig, AxiosRequestConfig } from 'axios';
 import { debounce, get } from 'lodash';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+
+interface CustomAxiosRequestConfig<T = any> extends AxiosRequestConfig<T> {
+  disableToast?: boolean;
+}
 
 const debouncedToastInfo = debounce(toast.info, 250);
 const debouncedToastError = debounce(toast.error, 250);
@@ -28,6 +32,13 @@ axios.interceptors.response.use(
   (error: AxiosError) => {
     const errorMessage: any = get(error, 'response.data.errors[0].message') || get(error, 'response.data.message');
     const errorCode = error?.response?.status;
+    const config = error.config as CustomAxiosRequestConfig;
+
+    if (config?.disableToast) {
+      return Promise.reject({
+        message: errorMessage
+      })
+    }
 
     if (['Token expired.', 'Token has expired.'].includes(errorMessage)) {
       debouncedToastInfo('Please re-login to continue.');

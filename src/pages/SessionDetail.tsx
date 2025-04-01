@@ -1,28 +1,67 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Layout from 'components/Layout';
+import { listenToQueueData } from 'utils/firebaseHelper';
+import { useShowClinicSessionByRefNo } from 'hooks/clinic-session';
 
 const user = {
   isAuthenticated: true,
-  reservedQueueNumber: 42,
+  reservedQueueNumber: 1,
   reservedSession: 'Glowing Skin Facial'
 };
 
-const SessionDetailPage: React.FC = () => {
-  const { refno } = useParams();
-  
-  const sessionData = {
-    refno: refno,
-    title: 'Glowing Skin Facial',
-    description: 'A rejuvenating facial treatment designed to bring out your natural glow and youthful appearance.',
-    date: 'April 5, 2025, 10:00 AM',
-    location: 'DermaQ Clinic, Main Branch',
-    price: '$50',
-  };
+interface QueueItem {
+  queueNo: number;
+}
 
-  const currentQueueNumber = 50;
-  const nextQueueNumbers = [51, 52, 53, 54, 55];
+const SessionDetailPage: React.FC = () => {
+  const navigate = useNavigate()
+  const { refno } = useParams<{ refno: string }>();
+
+  const { data: response, isLoading, isError }: any = useShowClinicSessionByRefNo({refno})
+  const sessionDetail = response?.data?.data?.attributes || null
+  const [queue, setQueue] = useState<QueueItem[]>([]);
+
+  useEffect(() => {
+    if (!refno) return;
+
+    const unsubscribe = listenToQueueData(refno, (queueData) => {
+      setQueue(queueData);
+    });
+
+    return () => unsubscribe();
+  }, [refno]);
+
+  const currentQueueNumber = queue.length > 0 ? queue[0].queueNo : 0;
+  const nextQueueNumbers = queue.slice(1, 6).map((item) => item.queueNo);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full bg-gray-100 relative">
+        <div className="absolute inset-0 bg-white bg-opacity-80 flex flex-col justify-center items-center">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Loading sessions, please wait...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full bg-gray-100 relative">
+        <div className="absolute inset-0 bg-red-100 bg-opacity-80 flex flex-col justify-center items-center border border-red-400 text-red-700 p-6">
+          ❌ <span className="text-lg font-semibold">Failed to load clinic session. Please try again later.</span>
+          <button 
+            className="mt-4 btn btn-outline btn-primary hover:bg-primary hover:text-white transition" 
+            onClick={() => navigate('/')}
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Layout>
@@ -30,8 +69,8 @@ const SessionDetailPage: React.FC = () => {
         <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
 
         <div className="relative z-10 container mx-auto px-6 text-white">
-          <h1 className="text-4xl font-bold mb-4">{sessionData.title}</h1>
-          <p className="text-lg mb-8">{sessionData.description}</p>
+          <h1 className="text-4xl font-bold mb-4">{sessionDetail?.title}</h1>
+          <p className="text-lg mb-8">{sessionDetail?.description}</p>
 
           <div className="bg-white bg-opacity-70 p-8 rounded-lg shadow-xl max-w-2xl mx-auto relative">
             {user.isAuthenticated && (
@@ -44,9 +83,9 @@ const SessionDetailPage: React.FC = () => {
 
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Session Details</h2>
             <ul className="text-gray-700 space-y-2">
-              <li><strong>Date & Time:</strong> {sessionData.date}</li>
-              <li><strong>Location:</strong> {sessionData.location}</li>
-              <li><strong>Price:</strong> {sessionData.price}</li>
+              <li><strong>Max Slot:</strong> {sessionDetail?.max_slots || 0}</li>
+              <li><strong>Date & Time:</strong> {`${sessionDetail?.session_date} (${sessionDetail?.formatted_start_time} - ${sessionDetail?.formatted_end_time})`}</li>
+              <li><strong>Status:</strong> {sessionDetail?.status?.label}</li>
             </ul>
           </div>
 

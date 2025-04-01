@@ -11,9 +11,9 @@ const LandingPage: React.FC = () => {
         <div className="relative flex-1 bg-gradient-to-b from-blue-500 to-blue-300 py-16">
             <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
             <div className="relative z-10 container mx-auto px-6 text-center text-white">
-            <h1 className="text-5xl font-bold leading-tight mb-4">Transform Your Skin with Our Exclusive Sessions</h1>
-            <p className="text-xl mb-8">Book your next session today and get glowing!</p>
-            <SessionList />
+                <h1 className="text-5xl font-bold leading-tight mb-4">Transform Your Skin with Our Exclusive Sessions</h1>
+                <p className="text-xl mb-8">Book your next session today and get glowing!</p>
+                <SessionList />
             </div>
         </div>
 
