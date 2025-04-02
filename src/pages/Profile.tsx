@@ -59,9 +59,9 @@ const ProfilePage: React.FC = () => {
 
     return (
         <Layout>
-            <main className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-12">
+            <main className="flex-1 px-4 py-4">
             <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-xl">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Profile</h2>
+                <h2 className="text-2xl font-bold text-left text-gray-800 mb-6">Edit Profile</h2>
                 
                 <form onSubmit={handleSubmit(onSaveChangesHandler)} className="space-y-4">
                     <div>

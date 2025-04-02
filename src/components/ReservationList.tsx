@@ -30,7 +30,7 @@ const ReservationList: React.FC = () => {
                     type="text"
                     placeholder="Search.."
                     onChange={handleSearchChange}
-                    className="input input-bordered input-primary w-1/2"
+                    className="input input-bordered input-primary w-full sm:w-3/4 md:w-1/2 max-w-md"
                 />
             </div>
 
