@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
-      toast.success("Successfully logged out.", {
+      toast.info("Successfully logged out.", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,

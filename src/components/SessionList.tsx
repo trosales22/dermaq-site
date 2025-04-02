@@ -26,6 +26,17 @@ const SessionList: React.FC = () => {
     );
   }
 
+  if (list.length <= 0) {
+    return (
+      <div className="flex flex-col justify-center items-center h-64 text-white-500 text-lg font-semibold space-y-4">
+        <div className="text-4xl">
+          <AlertTriangle />
+        </div>
+        <div>No sessions available at the moment.</div>
+      </div>
+    );
+  }
+  
   return (
     <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {list.map((item: any) => (

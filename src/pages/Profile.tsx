@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
-import { Link, useNavigate } from 'react-router-dom';
 import { CustomerFormData, customerSchema } from 'schemas/customerSchema';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
-import { useRegisterCustomer } from 'hooks/auth';
+import { useMyProfile, useUpdateMyProfile } from 'hooks/auth';
 import { toast } from 'react-toastify';
 import Cookies from "js-cookie";
+import { useQueryClient } from '@tanstack/react-query';
 
-const RegisterPage: React.FC = () => {
-    const navigate = useNavigate()
+const ProfilePage: React.FC = () => {
+    const queryClient = useQueryClient()
     const {
+        watch,
+        setValue,
         register,
         handleSubmit,
         reset,
@@ -19,9 +21,20 @@ const RegisterPage: React.FC = () => {
         resolver: zodResolver(customerSchema)
     });
 
-    const { mutate: registerCustomer, isPending: isRegisterLoading } = useRegisterCustomer({
-        onSuccess: (res) => {
-            toast.info("Registered user successfully.", {
+    const { data: response }: any = useMyProfile({});
+    const firstName = response?.data?.data?.firstname || ''
+    const lastName = response?.data?.data?.lastname || ''
+
+    useEffect(() => {
+        setValue('username', response?.data?.data?.username || '')
+        setValue('email', response?.data?.data?.email || '')
+        setValue('firstname', firstName)
+        setValue('lastname', lastName)
+    }, [response])
+
+    const { mutate: updateMyProfile, isPending: isUpdateMyProfileLoading } = useUpdateMyProfile({
+        onSuccess: () => {
+            toast.info("Profile updated successfully.", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -31,29 +44,26 @@ const RegisterPage: React.FC = () => {
                 theme: "colored"
             })
 
-            Cookies.set('auth_status', 'authenticated');
-            Cookies.set('token', res.data?.access_token?.token);
-            Cookies.set('firstname', res?.data?.details?.firstname);
-            Cookies.set('lastname', res?.data?.details?.lastname);
-            Cookies.set('role', res?.data?.details?.role);
+            Cookies.set('firstname', watch().firstname)
+            Cookies.set('lastname', watch().lastname)
 
+            queryClient.invalidateQueries({ queryKey: ['MY_PROFILE'] })
             reset()
-            navigate('/profile')
         },
         onError: () => {}
     });
 
-    const onSubmit = (data: any) => {
-        registerCustomer(data);
-    };
+    const onSaveChangesHandler = () => {
+        updateMyProfile(watch());
+    }
 
     return (
         <Layout>
             <main className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-12">
             <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-xl">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create an Account</h2>
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Profile</h2>
                 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit(onSaveChangesHandler)} className="space-y-4">
                     <div>
                         <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                         <input
@@ -103,35 +113,19 @@ const RegisterPage: React.FC = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter your password"
-                            {...register("password")}
-                        />
-                        {errors.password && <label className="text-red-500 text-sm">{errors.password.message}</label>}
-                    </div>
-
-                    <div>
-                    <button
-                        type="submit"
-                        disabled={isRegisterLoading}
-                        className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isRegisterLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {isRegisterLoading ? 'Registering...' : 'Create Account'}
-                    </button>
+                        <button
+                            type="submit"
+                            disabled={isUpdateMyProfileLoading}
+                            className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isUpdateMyProfileLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isUpdateMyProfileLoading ? 'Updating...' : 'Update'}
+                        </button>
                     </div>
                 </form>
-
-                <div className="text-center mt-6">
-                    <p className="text-sm text-gray-600">Already have an account? <Link to="/signin" className="text-indigo-500 hover:text-indigo-700">Login</Link></p>
-                </div>
             </div>
         </main>
         </Layout>
     );
 };
 
-export default RegisterPage;
+export default ProfilePage;
