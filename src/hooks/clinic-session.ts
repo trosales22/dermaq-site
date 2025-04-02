@@ -19,6 +19,7 @@ export const useListClinicSession = ({ queryOptions }: ListClinicSessionParams) 
     return useQuery({
       queryKey: ['CLINIC_SESSION_LIST'],
       queryFn: () => fns.getAllClinicSession(),
+      retry: false,
       ...queryOptions
     });
 };
@@ -36,6 +37,7 @@ export const useListReservedQueue = ({ refno, queryOptions }: ListReservedQueueP
   return useQuery({
     queryKey: ['RESERVED_QUEUE_LIST', refno],
     queryFn: () => fns.getAllReservedQueue(refno),
+    retry: false,
     ...queryOptions
   });
 };
