@@ -1,11 +1,14 @@
 import { useListClinicSession } from 'hooks/clinic-session';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AlertTriangle } from 'lucide-react';
+import Cookies from "js-cookie";
 
 const SessionList: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const isAuthenticated: boolean = Cookies.get('auth_status') === 'authenticated';
   const { data: response, isLoading, isError }: any = useListClinicSession({})
-  const list = response?.data?.data || []; 
+  const list = response?.data?.data || []
 
   if (isLoading) {
     return (
@@ -18,7 +21,7 @@ const SessionList: React.FC = () => {
   if (isError) {
     return (
       <div className="flex justify-center items-center h-64 text-red-500 text-lg font-semibold">
-        ❌ Failed to load sessions. Please try again later.
+        <AlertTriangle /> Failed to load sessions. Please try again later.
       </div>
     );
   }
@@ -38,14 +41,19 @@ const SessionList: React.FC = () => {
             </h2>
             <p className="text-lg mt-2">{item?.attributes?.description}</p>
             <p className="text-sm font-semibold text-gray-200 mt-4">🧑‍🤝‍🧑 Max Slots: <span className="font-bold text-white">{item?.attributes?.max_slots}</span></p>
-            <button 
-              className="mt-4 btn btn-outline btn-white hover:bg-white hover:text-black transition"
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-            >
-              Reserve Slot
-            </button>
+
+            {isAuthenticated ? (
+              <button 
+                className="mt-4 btn btn-outline btn-white hover:bg-white hover:text-black transition"
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                Reserve Slot
+              </button>
+            ) : (
+              <div className="mt-4 text-sm text-black">You need to log in to reserve slot.</div>
+            )}            
           </div>
         </div>
       ))}

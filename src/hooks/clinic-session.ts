@@ -6,8 +6,13 @@ type ListClinicSessionParams = {
 };
 
 type ShowClinicSessionByRefNoParams = {
-    refno?: string | undefined,
-    queryOptions?: UseQueryOptions;
+  refno?: string | undefined,
+  queryOptions?: UseQueryOptions;
+};
+
+type ListReservedQueueParams = {
+  refno?: string | undefined,
+  queryOptions?: UseQueryOptions;
 };
   
 export const useListClinicSession = ({ queryOptions }: ListClinicSessionParams) => {
@@ -25,4 +30,12 @@ export const useShowClinicSessionByRefNo = ({refno, queryOptions}: ShowClinicSes
       retry: false,
       ...queryOptions
     });
+};
+
+export const useListReservedQueue = ({ refno, queryOptions }: ListReservedQueueParams) => {
+  return useQuery({
+    queryKey: ['RESERVED_QUEUE_LIST', refno],
+    queryFn: () => fns.getAllReservedQueue(refno),
+    ...queryOptions
+  });
 };

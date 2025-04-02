@@ -1,5 +1,5 @@
 import { database } from 'config/firebaseConfig';
-import { ref, onValue, off } from 'firebase/database';
+import { ref, onValue, off, query, orderByChild, equalTo } from 'firebase/database';
 
 interface QueueItem {
   queueNo: number;
@@ -12,9 +12,10 @@ export const listenToQueueData = (csRefno: string | undefined, callback: QueueCa
   if (!csRefno) return () => {};
 
   const queueRef = ref(database, `queues/${csRefno}`);
+  const confirmedQueueQuery = query(queueRef, orderByChild('status'), equalTo('confirmed'));
 
   // Subscribe to Firebase Realtime Database updates
-  const unsubscribe = onValue(queueRef, (snapshot) => {
+  const unsubscribe = onValue(confirmedQueueQuery, (snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.val();
       const queueArray: QueueItem[] = Object.entries(data)

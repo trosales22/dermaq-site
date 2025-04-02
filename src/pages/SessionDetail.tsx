@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import Layout from 'components/Layout';
 import { listenToQueueData } from 'utils/firebaseHelper';
-import { useShowClinicSessionByRefNo } from 'hooks/clinic-session';
-
-const user = {
-  isAuthenticated: true,
-  reservedQueueNumber: 1,
-  reservedSession: 'Glowing Skin Facial'
-};
+import { useListReservedQueue, useShowClinicSessionByRefNo } from 'hooks/clinic-session';
+import { AlertTriangle } from 'lucide-react';
+import Cookies from "js-cookie";
 
 interface QueueItem {
   queueNo: number;
 }
 
 const SessionDetailPage: React.FC = () => {
+  const isAuthenticated: boolean = Cookies.get('auth_status') === 'authenticated';
   const navigate = useNavigate()
   const { refno } = useParams<{ refno: string }>();
 
   const { data: response, isLoading, isError }: any = useShowClinicSessionByRefNo({refno})
   const sessionDetail = response?.data?.data?.attributes || null
+
+  const { 
+    data: reservedQueueListResponse
+  }: any = useListReservedQueue({
+    refno
+  })
+
+  const reservedQueueList = reservedQueueListResponse?.data?.data || []
+
   const [queue, setQueue] = useState<QueueItem[]>([]);
 
   useEffect(() => {
@@ -51,7 +56,7 @@ const SessionDetailPage: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-screen w-full bg-gray-100 relative">
         <div className="absolute inset-0 bg-red-100 bg-opacity-80 flex flex-col justify-center items-center border border-red-400 text-red-700 p-6">
-          ❌ <span className="text-lg font-semibold">Failed to load clinic session. Please try again later.</span>
+          <AlertTriangle /> <span className="text-lg font-semibold">Failed to load clinic session. Please try again later.</span>
           <button 
             className="mt-4 btn btn-outline btn-primary hover:bg-primary hover:text-white transition" 
             onClick={() => navigate('/')}
@@ -73,12 +78,12 @@ const SessionDetailPage: React.FC = () => {
           <p className="text-lg mb-8">{sessionDetail?.description}</p>
 
           <div className="bg-white bg-opacity-70 p-8 rounded-lg shadow-xl max-w-2xl mx-auto relative">
-            {user.isAuthenticated && (
-              <Link to="/cancel-reservation" className="absolute bottom-4 right-4">
+            {isAuthenticated && (
+              <div className='absolute bottom-4 right-4'>
                 <button className="py-2 px-6 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-300">
                   Cancel Reservation
                 </button>
-              </Link>
+              </div>
             )}
 
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Session Details</h2>
@@ -90,18 +95,30 @@ const SessionDetailPage: React.FC = () => {
           </div>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            <div className="p-6 bg-gradient-to-b from-gray-200 to-gray-300 rounded-lg shadow-xl transform transition-all duration-300 hover:scale-105">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Reserved Queue Number</h3>
-              <div className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block">
-                #{user.reservedQueueNumber}
+            {isAuthenticated && (
+              <div className="p-6 bg-gradient-to-b from-gray-200 to-gray-300 rounded-lg shadow-xl transform transition-all duration-300 hover:scale-105">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Reserved Queue Numbers</h3>
+    
+              <div className="space-y-2">
+                {reservedQueueList.map((item: any, index: number) => {
+                  return <div
+                    key={index}
+                    className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block"
+                  >
+                    #{item?.attributes?.queue_number}
+                  </div>
+                })}
               </div>
             </div>
+            )}
 
             <div className="p-6 bg-gradient-to-b from-gray-200 to-gray-300 rounded-lg shadow-xl transform transition-all duration-300 hover:scale-105">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Current Queue Number</h3>
-              <div className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block">
-                #{currentQueueNumber}
-              </div>
+              {currentQueueNumber > 0 && (
+                <div className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block">
+                  #{currentQueueNumber}
+                </div>
+              )}
             </div>
           </div>
 
@@ -118,13 +135,11 @@ const SessionDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {!user.isAuthenticated && (
+          {!isAuthenticated && (
             <div className="mt-8 text-center">
-              <Link to="/book-session">
-                <button className="py-3 px-8 bg-blue-600 text-white text-lg rounded-full hover:bg-blue-700 transition duration-300">
-                  Book This Session
-                </button>
-              </Link>
+              <button className="py-3 px-8 bg-blue-600 text-white text-lg rounded-full hover:bg-blue-700 transition duration-300">
+                Book This Session
+              </button>
             </div>
           )}
         </div>

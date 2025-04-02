@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from 'components/Layout';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useLoginMutation } from 'hooks/auth';
+import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-  
-    // Simulate a login attempt
-    const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsLoading(true);
-  
-      // Dummy authentication check (replace with real authentication logic)
-      if (email === 'user@example.com' && password === 'password123') {
-        //toast.success('Login successful!');
-        // Redirect to dashboard or home page
-        setTimeout(() => window.location.href = '/dashboard', 1000);
-      } else {
-        //toast.error('Invalid credentials. Please try again.');
-      }
-  
-      setIsLoading(false);
+    const navigate = useNavigate();
+
+    const { register, handleSubmit } = useForm();
+
+    const { mutate: login, isPending: isLoginLoading } = useLoginMutation({
+        onSuccess: (res) => {
+            toast.success("Successfully logged in.", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                progress: undefined,
+                theme: "colored"
+            });
+
+            Cookies.set('auth_status', 'authenticated');
+            Cookies.set('token', res.data?.access_token?.token);
+            Cookies.set('firstname', res?.data?.details?.firstname);
+            Cookies.set('lastname', res?.data?.details?.lastname);
+            Cookies.set('role', res?.data?.details?.role);
+
+            navigate("/");
+        },
+        onError: () => {}
+    });
+
+    const onLoginHandler = (data: any) => {
+        login(data);
     };
 
     return (
@@ -30,18 +45,16 @@ const LoginPage: React.FC = () => {
                 <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-xl">
                     <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
                     
-                    <form onSubmit={handleLogin} className="space-y-4">
+                    <form onSubmit={handleSubmit(onLoginHandler)} className="space-y-4">
                         <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <label htmlFor="user_id" className="block text-sm font-medium text-gray-700 mb-2">User ID</label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="text"
+                            id="user_id"
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="Enter your email"
+                            placeholder="Enter your user ID"
+                            {...register("user_id")}
                         />
                         </div>
 
@@ -50,30 +63,24 @@ const LoginPage: React.FC = () => {
                         <input
                             type="password"
                             id="password"
-                            name="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter your password"
+                            {...register("password")}
                         />
                         </div>
 
                         <div className="flex justify-between items-center">
-                        <div>
-                            <input type="checkbox" id="remember-me" className="mr-2" />
-                            <label htmlFor="remember-me" className="text-sm text-gray-600">Remember me</label>
-                        </div>
-                        <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-700">Forgot password?</Link>
+                            <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-700">Forgot password?</Link>
                         </div>
 
                         <div>
                         <button
                             type="submit"
-                            disabled={isLoading}
-                            className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={isLoginLoading}
+                            className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoginLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            {isLoading ? 'Logging in...' : 'Log in'}
+                            {isLoginLoading ? 'Logging in...' : 'Log in'}
                         </button>
                         </div>
                     </form>
