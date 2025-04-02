@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig, AxiosRequ
 import { debounce, get } from 'lodash';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import * as https from 'https';
 
 interface CustomAxiosRequestConfig<T = any> extends AxiosRequestConfig<T> {
   disableToast?: boolean;
@@ -14,7 +13,6 @@ const debouncedToastError = debounce(toast.error, 250);
 // Set Base URL and Defaults
 axios.defaults.baseURL = import.meta.env.VITE_WS_BASE_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 // Request Interceptor
 axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
