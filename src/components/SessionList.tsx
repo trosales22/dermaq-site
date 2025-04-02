@@ -20,8 +20,8 @@ const SessionList: React.FC = () => {
 
   if (isError) {
     return (
-      <div className="flex justify-center items-center h-64 text-red-500 text-lg font-semibold">
-        <AlertTriangle /> Failed to load sessions. Please try again later.
+      <div className="flex justify-center items-center h-64 text-white-500 text-lg font-semibold">
+        <AlertTriangle />&nbsp;Failed to load sessions. Please try again later.
       </div>
     );
   }
