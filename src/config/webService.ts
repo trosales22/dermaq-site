@@ -45,7 +45,7 @@ axios.interceptors.response.use(
       Cookies.remove('auth_status');
       Cookies.remove('token');
       Cookies.remove('role');
-      window.location.href = '/login';
+      window.location.href = '/signin';
       return Promise.reject(error);
     }
 
@@ -56,7 +56,7 @@ axios.interceptors.response.use(
       Cookies.remove('auth_status');
       Cookies.remove('token');
       Cookies.remove('role');
-      window.location.href = '/login';
+      window.location.href = '/signin';
     } else if (errorCode === 422) {
       debouncedToastError(errorMessage || 'Unprocessable Entity!');
     } else if (errorCode === 500) {
