@@ -126,14 +126,6 @@ const SessionDetailPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {!isAuthenticated && (
-            <div className="mt-8 text-center">
-              <button className="py-3 px-8 bg-blue-600 text-white text-lg rounded-full hover:bg-blue-700 transition duration-300">
-                Book This Session
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </Layout>
