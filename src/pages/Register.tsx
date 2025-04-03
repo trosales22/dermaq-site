@@ -21,15 +21,7 @@ const RegisterPage: React.FC = () => {
 
     const { mutate: registerCustomer, isPending: isRegisterLoading } = useRegisterCustomer({
         onSuccess: (res) => {
-            toast.info("Registered user successfully.", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                progress: undefined,
-                theme: "colored"
-            })
+            toast.info("Registered user successfully.")
 
             Cookies.set('auth_status', 'authenticated');
             Cookies.set('token', res.data?.access_token?.token);

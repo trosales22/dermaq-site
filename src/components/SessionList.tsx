@@ -35,7 +35,9 @@ const SessionList: React.FC = () => {
       onShowReserveSuccessfulHandler()
       setShowConfetti(true);
     },
-    onError: () => {}
+    onError: () => {
+      setOpenReserveConfirmation(false)
+    }
   });
 
   const onShowReserveConfirmationHandler = (payload: any) => {
@@ -96,12 +98,10 @@ const SessionList: React.FC = () => {
 
               <p className="text-sm italic text-black">{item?.attributes?.description}</p>
 
-              <div className="mt-4 flex flex-col text-left text-sm text-black">
+              <div className="mt-4 flex flex-col text-left text-sm text-black">    
                 <p className="font-semibold">
+                  📅 {`${item?.attributes?.formatted_session_date} (${item?.attributes?.formatted_start_time} - ${item?.attributes?.formatted_end_time})`}<br/>
                   🧑‍🤝‍🧑 Max Slot: {item?.attributes?.max_slots}
-                </p>       
-                <p className="font-semibold">
-                  📅 {`${item?.attributes?.session_date} (${item?.attributes?.formatted_start_time} - ${item?.attributes?.formatted_end_time})`}
                 </p>
               </div>
 

@@ -13,15 +13,7 @@ const Navbar: React.FC = () => {
 
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
-      toast.info("Successfully logged out.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "colored"
-      });
+      toast.info("Successfully logged out.");
 
       Cookies.remove('auth_status');
       Cookies.remove('firstname');

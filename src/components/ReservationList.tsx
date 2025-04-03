@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertTriangle, LoaderIcon } from 'lucide-react';
+import { AlertTriangle, Hash, LoaderIcon } from 'lucide-react';
 import { useListReservation } from 'hooks/reservation';
 import { debounce } from 'lodash';
 
@@ -71,17 +71,25 @@ const ReservationList: React.FC = () => {
                             onClick={() => window.open(`/sessions/${item?.attributes?.clinic_session?.refno}`, "_blank")}
                         >
                             <div className="card-body p-6 flex flex-col">
-                            <span className="text-medium font-semibold text-blue-600">{item?.attributes?.refno}</span>
-                            <span className="card-title text-lg font-bold flex items-center">
-                                {item?.attributes?.clinic_session?.title}
-                            </span>
+                                <div className='flex flex-row'>
+                                    <Hash size={20} color='blue'/>
+                                    <span className="text-medium font-semibold text-blue-600">{item?.attributes?.refno}</span>
+                                </div>
+                                
+                                <span className="card-title text-lg font-bold flex items-center">
+                                    {item?.attributes?.clinic_session?.title}
+                                </span>
+                                
+                                <p className="text-medium italic">{item?.attributes?.clinic_session?.description}</p>
 
-                            <p className="text-medium italic">{item?.attributes?.clinic_session?.description}</p>
-
-                            <div className="mt-4 flex justify-between text-sm text-black-200">
-                                <p className="font-semibold">🧑‍🤝‍🧑 Max Slots: <span className="font-bold text-black">{item?.attributes?.clinic_session?.max_slots}</span></p>       
-                                <p className="font-semibold text-right">📅 {`${item?.attributes?.clinic_session?.session_date} (${item?.attributes?.clinic_session?.formatted_start_time} - ${item?.attributes?.clinic_session?.formatted_end_time})`}</p>
-                            </div>
+                                <p className="font-semibold">
+                                    📅 {`${item?.attributes?.clinic_session?.formatted_session_date} (${item?.attributes?.clinic_session?.formatted_start_time} - ${item?.attributes?.clinic_session?.formatted_end_time})`}
+                                    <br/>
+                                    🧑‍🤝‍🧑 Max Slot: {item?.attributes?.clinic_session?.max_slots}
+                                </p>
+                                <div className="mt-4 flex flex-col justify-between text-lg text-blue-600">
+                                    <p className="font-semibold">Queue #: <span className="text-black">{item?.attributes?.queue_number}</span></p>
+                                </div>
                             </div>
                         </div>
                     ))}

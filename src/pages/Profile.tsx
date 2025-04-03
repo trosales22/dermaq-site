@@ -34,15 +34,7 @@ const ProfilePage: React.FC = () => {
 
     const { mutate: updateMyProfile, isPending: isUpdateMyProfileLoading } = useUpdateMyProfile({
         onSuccess: () => {
-            toast.info("Profile updated successfully.", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                progress: undefined,
-                theme: "colored"
-            })
+            toast.info("Profile updated successfully.")
 
             Cookies.set('firstname', watch().firstname)
             Cookies.set('lastname', watch().lastname)
