@@ -1,5 +1,5 @@
-import { Navbar } from "components/ui/components";
 import Wrapper from "components/Wrapper";
+import Navbar from "components/Navbar";
 import Footer from "components/Footer";
 
 interface LayoutProps {

@@ -78,14 +78,6 @@ const SessionDetailPage: React.FC = () => {
           <p className="text-lg mb-8">{sessionDetail?.description}</p>
 
           <div className="bg-white bg-opacity-70 p-8 rounded-lg shadow-xl max-w-2xl mx-auto relative">
-            {isAuthenticated && (
-              <div className='absolute bottom-4 right-4'>
-                <button className="py-2 px-6 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-300">
-                  Cancel Reservation
-                </button>
-              </div>
-            )}
-
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Session Details</h2>
             <ul className="text-gray-700 space-y-2">
               <li><strong>Max Slot:</strong> {sessionDetail?.max_slots || 0}</li>
