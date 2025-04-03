@@ -12,6 +12,7 @@ const SessionList: React.FC = () => {
   const navigate = useNavigate()
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [generatedQueueNo, setGeneratedQueueNo] = useState(0);
   const [openReserveConfirmation, setOpenReserveConfirmation] = useState(false);
   const [openSuccessReserve, setOpenSuccessReserve] = useState(false);
   const [selectedClinicSession, setSelectedSession] = useState<any>({
@@ -28,7 +29,8 @@ const SessionList: React.FC = () => {
   }
 
   const { mutate: reserveSlot, isPending: isReserveSlotLoading } = useReserveSlotMutation({
-    onSuccess: () => {
+    onSuccess: (res) => {
+      setGeneratedQueueNo(res?.data?.details?.queue_number)
       setOpenReserveConfirmation(false)
       onShowReserveSuccessfulHandler()
       setShowConfetti(true);
@@ -146,7 +148,12 @@ const SessionList: React.FC = () => {
         headerColor="blue"
         closeOnBackdrop={false}
       >
-        <p className='text-black text-left'>You successfully reserved a slot 🎉🎉</p>
+        <p className='text-black text-left'>
+          You successfully reserved a slot 🎉🎉
+        </p>
+        <p className="text-2xl font-bold text-center text-blue-600 mt-2">
+          Queue Number: {generatedQueueNo}
+        </p>
         <div className="flex justify-end space-x-2 mt-4">
           <Button variant="secondary" onClick={() => setOpenSuccessReserve(false)}>Close</Button>
           <Button variant="primary" className="text-white" onClick={() => {
