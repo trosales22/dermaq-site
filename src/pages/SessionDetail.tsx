@@ -5,6 +5,7 @@ import { listenToQueueData } from 'utils/firebaseHelper';
 import { useListReservedQueue, useShowClinicSessionByRefNo } from 'hooks/clinic-session';
 import { AlertTriangle } from 'lucide-react';
 import { useAuthData } from 'hooks/useAuthData';
+import { ReservedQueueListAttributes } from 'types/session';
 
 interface QueueItem {
   queueNo: number;
@@ -14,15 +15,17 @@ const SessionDetailPage: React.FC = () => {
   const { isAuthenticated } = useAuthData();
   const navigate = useNavigate();
   const { refno } = useParams<{ refno: string }>();
-
   const { data: response, isLoading, isError }: any = useShowClinicSessionByRefNo({ refno });
   const sessionDetail = response?.data?.data?.attributes || null;
+  let reservedQueueList: ReservedQueueListAttributes[] = [];
 
-  const { data: reservedQueueListResponse }: any = useListReservedQueue({
-    refno,
-  });
+  if (isAuthenticated) {
+    const { data: reservedQueueListResponse }: any = useListReservedQueue({
+      refno,
+    });
 
-  const reservedQueueList = reservedQueueListResponse?.data?.data || [];
+    reservedQueueList = reservedQueueListResponse?.data?.data || [];
+  }
 
   const [queue, setQueue] = useState<QueueItem[]>([]);
 

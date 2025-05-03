@@ -8,11 +8,11 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} DermaQ. All rights reserved.
         </p>
         <p className="text-sm">
-          <Link to="/privacy-policy" className="hover:text-blue-400">
+          <Link to="/privacy-and-terms" className="hover:text-blue-400">
             Privacy Policy
           </Link>{' '}
           |
-          <Link to="/terms" className="hover:text-blue-400">
+          <Link to="/privacy-and-terms" className="hover:text-blue-400">
             {' '}
             Terms of Service
           </Link>

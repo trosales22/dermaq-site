@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoginLoading}
-                className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoginLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full py-3 px-4 bg-indigo-600 text-white cursor-pointer font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoginLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isLoginLoading ? 'Logging in...' : 'Log in'}
               </button>

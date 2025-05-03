@@ -11,12 +11,14 @@ import UnauthenticatedRoute from 'components/UnauthenticatedRoute';
 import ReservationPage from 'pages/Reservation';
 import { Toaster } from 'react-hot-toast';
 import NotFound from 'components/NotFound';
+import PrivacyAndTermsPage from 'pages/PrivacyAndTerms';
 
 function App() {
   return (
     <Wrapper>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/privacy-and-terms" element={<PrivacyAndTermsPage />} />
 
         <Route element={<UnauthenticatedRoute />}>
           <Route path="/signin" element={<LoginPage />} />

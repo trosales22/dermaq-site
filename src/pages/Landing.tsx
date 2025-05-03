@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
                 Join us today to start booking your sessions and enjoying exclusive offers.
               </p>
               <Link to="/register">
-                <button className="py-3 px-8 bg-blue-600 text-white text-lg rounded-full hover:bg-blue-700 transition duration-300">
+                <button className="py-3 px-8 bg-blue-600 text-white text-lg rounded-full hover:bg-blue-700 transition duration-300 cursor-pointer">
                   Register Now
                 </button>
               </Link>
