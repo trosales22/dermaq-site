@@ -10,6 +10,7 @@ import ProfilePage from 'pages/Profile';
 import UnauthenticatedRoute from 'components/UnauthenticatedRoute';
 import ReservationPage from 'pages/Reservation';
 import { Toaster } from 'react-hot-toast';
+import NotFound from 'components/NotFound';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
         </Route>
 
         <Route path="/sessions/:refno" element={<SessionDetailPage />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <Toaster />
