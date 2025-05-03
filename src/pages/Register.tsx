@@ -63,7 +63,7 @@ const RegisterPage: React.FC = () => {
               label="Email"
               placeholder="Enter your email"
               {...register('email')}
-              error={errors.username?.message}
+              error={errors.email?.message}
             />
 
             <Input
