@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AlertTriangle, Hash, LoaderIcon } from 'lucide-react';
 import { useListReservation } from 'hooks/reservation';
 import { debounce } from 'lodash';
+import { SessionReservationList } from 'types/session';
 
 const ReservationList: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -19,7 +20,7 @@ const ReservationList: React.FC = () => {
   }: any = useListReservation({
     params: { q: search, page: currentPage, limit: itemsPerPage },
   });
-  const list = response?.data?.data || [];
+  const list: SessionReservationList[] = response?.data?.data || [];
   const totalItems = response?.data?.meta?.pagination?.total || 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -68,7 +69,7 @@ const ReservationList: React.FC = () => {
       {!isLoading && !isError && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
-            {list.map((item: any) => {
+            {list.map((item) => {
               const session = item?.attributes?.clinic_session;
               const sessionEnd = new Date(`${session?.session_date}T${session?.end_time}`);
               const currentDate = new Date();

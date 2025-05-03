@@ -7,6 +7,7 @@ import { useReserveSlotMutation } from 'hooks/reservation';
 import { useWindowSize } from 'react-use';
 import Confetti from 'react-confetti';
 import { useAuthData } from 'hooks/useAuthData';
+import { CustomerClinicSessionList } from 'types/session';
 
 const SessionList: React.FC = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const SessionList: React.FC = () => {
   });
   const { isAuthenticated } = useAuthData();
   const { data: response, isLoading, isError }: any = useListClinicSession({});
-  const list = response?.data?.data || [];
+  const list: CustomerClinicSessionList[] = response?.data?.data || [];
 
   const onShowReserveSuccessfulHandler = () => {
     setShowConfetti(true);
@@ -86,7 +87,7 @@ const SessionList: React.FC = () => {
     <div>
       {showConfetti && <Confetti width={width} height={height} />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {list.map((item: any) => (
+        {list.map((item) => (
           <div
             key={item.id}
             className="card text-gray-700 bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
