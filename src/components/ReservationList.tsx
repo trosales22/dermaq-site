@@ -67,62 +67,76 @@ const ReservationList: React.FC = () => {
 
       {!isLoading && !isError && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {list.map((item: any) => (
-              <div
-                key={item.id}
-                className="card text-black shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer"
-                onClick={() =>
-                  window.open(`/sessions/${item?.attributes?.clinic_session?.refno}`, '_blank')
-                }
-              >
-                <div className="card-body p-6 flex flex-col">
-                  <div className="flex flex-row">
-                    <Hash size={20} color="blue" />
-                    <span className="text-medium font-semibold text-blue-600">
-                      {item?.attributes?.refno}
-                    </span>
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
+            {list.map((item: any) => {
+              const session = item?.attributes?.clinic_session;
+              const sessionEnd = new Date(`${session?.session_date}T${session?.end_time}`);
+              const currentDate = new Date();
 
-                  <span className="card-title text-lg font-bold flex items-center">
-                    {item?.attributes?.clinic_session?.title}
-                  </span>
+              // Determine if the session has ended
+              const hasEnded = currentDate > sessionEnd;
 
-                  <p className="text-medium italic">
-                    {item?.attributes?.clinic_session?.description}
-                  </p>
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white shadow-md rounded-2xl overflow-hidden border border-gray-200 hover:shadow-lg transition-transform transform hover:scale-[1.02] cursor-pointer"
+                  onClick={() => window.open(`/sessions/${session?.refno}`, '_blank')}
+                >
+                  <div className="p-5 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-blue-600 font-semibold">
+                        <Hash size={18} color="blue" />
+                        <span>{item?.attributes?.refno}</span>
+                      </div>
+                      <span
+                        className={`badge text-xs px-3 py-1 rounded-full ${
+                          hasEnded ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'
+                        }`}
+                      >
+                        {hasEnded ? 'Ended' : 'Upcoming'}
+                      </span>
+                    </div>
 
-                  <p className="font-semibold">
-                    📅{' '}
-                    {`${item?.attributes?.clinic_session?.formatted_session_date} (${item?.attributes?.clinic_session?.formatted_start_time} - ${item?.attributes?.clinic_session?.formatted_end_time})`}
-                    <br />
-                    🧑‍🤝‍🧑 Max Slot: {item?.attributes?.clinic_session?.max_slots}
-                  </p>
-                  <div className="mt-4 flex flex-col justify-between text-lg text-blue-600">
-                    <p className="font-semibold">
-                      Queue #: <span className="text-black">{item?.attributes?.queue_number}</span>
+                    <h2 className="text-lg font-bold text-gray-800 line-clamp-2">
+                      {session?.title}
+                    </h2>
+
+                    <p className="text-sm text-gray-500 line-clamp-3 italic">
+                      {session?.description}
                     </p>
+
+                    <div className="text-sm text-gray-700 mt-2 space-y-1">
+                      <p>
+                        📅 <span className="font-semibold">{session?.formatted_session_date}</span>{' '}
+                        ({session?.formatted_start_time} - {session?.formatted_end_time})
+                      </p>
+                      <p>🧑‍🤝‍🧑 Max Slot: {session?.max_slots}</p>
+                    </div>
+
+                    <div className="mt-3 text-blue-600 text-sm font-semibold">
+                      Queue #: <span className="text-black">{item?.attributes?.queue_number}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center items-center mt-8 gap-4 px-4">
             <button
-              className="btn btn-sm btn-primary mr-2"
+              className="btn btn-sm btn-outline"
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}
             >
               Previous
             </button>
 
-            <span className="font-semibold">
+            <span className="text-sm font-medium">
               Page {currentPage} of {totalPages}
             </span>
 
             <button
-              className="btn btn-sm btn-primary ml-2"
+              className="btn btn-sm btn-outline"
               disabled={currentPage === totalPages}
               onClick={() => handlePageChange(currentPage + 1)}
             >

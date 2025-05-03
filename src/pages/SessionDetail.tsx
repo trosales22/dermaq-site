@@ -19,7 +19,15 @@ const SessionDetailPage: React.FC = () => {
   const sessionDetail = response?.data?.data?.attributes || null;
   let reservedQueueList: ReservedQueueListAttributes[] = [];
 
-  if (isAuthenticated) {
+  let hasEnded = false;
+  if (isAuthenticated && sessionDetail) {
+    const sessionEnd = new Date(`${sessionDetail?.session_date}T${sessionDetail?.end_time}`);
+    const currentDate = new Date();
+    hasEnded = currentDate > sessionEnd;
+  }
+
+  // Only call useListReservedQueue if session hasn't ended
+  if (isAuthenticated && !hasEnded && sessionDetail) {
     const { data: reservedQueueListResponse }: any = useListReservedQueue({
       refno,
     });
@@ -29,15 +37,16 @@ const SessionDetailPage: React.FC = () => {
 
   const [queue, setQueue] = useState<QueueItem[]>([]);
 
+  // Only subscribe to Firebase if the session has not ended
   useEffect(() => {
-    if (!refno) return;
+    if (!refno || hasEnded) return; // Skip subscribing if session has ended
 
     const unsubscribe = listenToQueueData(refno, (queueData) => {
       setQueue(queueData);
     });
 
     return () => unsubscribe();
-  }, [refno]);
+  }, [refno, hasEnded]); // Dependency array includes `hasEnded` to control when the effect runs
 
   const currentQueueNumber = queue.length > 0 ? queue[0].queueNo : 0;
   const nextQueueNumbers = queue.slice(1, 6).map((item) => item.queueNo);
