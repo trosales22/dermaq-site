@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
 
               <button
                 onClick={onLogoutHandler}
-                className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold"
+                className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold cursor-pointer"
               >
                 Logout
               </button>
@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
 
               <button
                 onClick={onLogoutHandler}
-                className="w-full text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold mt-2"
+                className="w-full text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold mt-2 cursor-pointer"
               >
                 Logout
               </button>
