@@ -2,11 +2,10 @@ import React from 'react';
 import SessionList from 'components/SessionList';
 import { Link } from 'react-router-dom';
 import Layout from 'components/Layout';
-import Cookies from "js-cookie";
+import { useAuthData } from 'hooks/useAuthData';
 
 const LandingPage: React.FC = () => {
-    const authStatus = Cookies.get('auth_status') ?? '';
-    const isAuthenticated: boolean = authStatus === 'authenticated'
+    const { isAuthenticated } = useAuthData();
 
     return (
         <Layout>

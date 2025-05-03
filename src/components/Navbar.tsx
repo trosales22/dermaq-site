@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from "js-cookie";
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useLogoutMutation } from 'hooks/auth';
 import { Menu, X } from 'lucide-react';
+import { useRemoveAuthField } from 'hooks/useRemoveAuthField';
+import { useAuthData } from 'hooks/useAuthData';
 
 const Navbar: React.FC = () => {
+  const { removeAuthField } = useRemoveAuthField();
+  const { isAuthenticated, firstname, lastname } = useAuthData();
+  const fullName = `${firstname} ${lastname}`;
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isAuthenticated: boolean = Cookies.get('auth_status') === 'authenticated';
-  const fullName = `${Cookies.get('firstname')} ${Cookies.get('lastname')}`;
+ 
 
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
-      toast.info("Successfully logged out.");
+      toast.success("Successfully logged out.");
 
-      Cookies.remove('auth_status');
-      Cookies.remove('firstname');
-      Cookies.remove('lastname');
-      Cookies.remove('token');
-      Cookies.remove('role');
+      removeAuthField('auth_status');
+      removeAuthField('firstname');
+      removeAuthField('lastname');
+      removeAuthField('token');
+      removeAuthField('role');
 
       navigate("/signin");
     },

@@ -1,6 +1,4 @@
 import './App.css'
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Wrapper from 'components/Wrapper'
 import { Route, Routes } from "react-router-dom";
 import LandingPage from 'pages/Landing';
@@ -11,6 +9,7 @@ import ProtectedRoute from 'components/ProtectedRoute';
 import ProfilePage from 'pages/Profile';
 import UnauthenticatedRoute from 'components/UnauthenticatedRoute';
 import ReservationPage from 'pages/Reservation';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -31,7 +30,7 @@ function App() {
         <Route path="/sessions/:refno" element={<SessionDetailPage />} />
       </Routes>
 
-      <ToastContainer />
+      <Toaster />
     </Wrapper>
   )
 }

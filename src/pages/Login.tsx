@@ -4,23 +4,35 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from 'hooks/auth';
-import Cookies from "js-cookie";
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
+import { Input } from 'components/ui/components';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LoginData, loginSchema } from 'schemas/loginSchema';
+import { useSetAuthField } from 'hooks/useSetAuthField';
 
 const LoginPage: React.FC = () => {
+    const { setAuthField } = useSetAuthField();
     const navigate = useNavigate();
 
-    const { register, handleSubmit } = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<LoginData>({
+        resolver: zodResolver(loginSchema)
+    });
 
     const { mutate: login, isPending: isLoginLoading } = useLoginMutation({
         onSuccess: (res) => {
+            reset()
             toast.success("Successfully logged in.");
 
-            Cookies.set('auth_status', 'authenticated');
-            Cookies.set('token', res.data?.access_token?.token);
-            Cookies.set('firstname', res?.data?.details?.firstname);
-            Cookies.set('lastname', res?.data?.details?.lastname);
-            Cookies.set('role', res?.data?.details?.role);
+            setAuthField('auth_status', 'authenticated');
+            setAuthField('firstname', res?.data?.details?.firstname);
+            setAuthField('lastname', res?.data?.details?.lastname);
+            setAuthField('role', res?.data?.details?.role);
+            setAuthField('token', res?.data?.access_token.token);
 
             navigate("/");
         },
@@ -38,42 +50,32 @@ const LoginPage: React.FC = () => {
                     <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
                     
                     <form onSubmit={handleSubmit(onLoginHandler)} className="space-y-4">
-                        <div>
-                        <label htmlFor="user_id" className="block text-sm font-medium text-gray-700 mb-2">User ID</label>
-                        <input
-                            type="text"
+                        <Input
                             id="user_id"
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            type="text"
+                            label="User ID"
                             placeholder="Enter your user ID"
                             {...register("user_id")}
+                            error={errors.user_id?.message}
                         />
-                        </div>
 
-                        <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            type="password"
+                        <Input
                             id="password"
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            type="password"
+                            label="Password"
                             placeholder="Enter your password"
                             {...register("password")}
+                            error={errors.password?.message}
                         />
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-700">Forgot password?</Link>
-                        </div>
 
                         <div>
-                        <button
-                            type="submit"
-                            disabled={isLoginLoading}
-                            className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoginLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            {isLoginLoading ? 'Logging in...' : 'Log in'}
-                        </button>
+                            <button
+                                type="submit"
+                                disabled={isLoginLoading}
+                                className={`w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md focus:outline-none hover:bg-indigo-700 transition duration-300 ${isLoginLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isLoginLoading ? 'Logging in...' : 'Log in'}
+                            </button>
                         </div>
                     </form>
 

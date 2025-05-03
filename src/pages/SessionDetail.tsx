@@ -4,14 +4,14 @@ import Layout from 'components/Layout';
 import { listenToQueueData } from 'utils/firebaseHelper';
 import { useListReservedQueue, useShowClinicSessionByRefNo } from 'hooks/clinic-session';
 import { AlertTriangle } from 'lucide-react';
-import Cookies from "js-cookie";
+import { useAuthData } from 'hooks/useAuthData';
 
 interface QueueItem {
   queueNo: number;
 }
 
 const SessionDetailPage: React.FC = () => {
-  const isAuthenticated: boolean = Cookies.get('auth_status') === 'authenticated';
+  const { isAuthenticated } = useAuthData();
   const navigate = useNavigate()
   const { refno } = useParams<{ refno: string }>();
 

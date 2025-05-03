@@ -2,11 +2,11 @@ import { useListClinicSession } from 'hooks/clinic-session';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle } from 'lucide-react';
-import Cookies from "js-cookie";
 import { Button, Modal } from './ui/components';
 import { useReserveSlotMutation } from 'hooks/reservation';
 import { useWindowSize } from 'react-use'
 import Confetti from 'react-confetti'
+import { useAuthData } from 'hooks/useAuthData';
 
 const SessionList: React.FC = () => {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ const SessionList: React.FC = () => {
     id: null,
     refno: null
   })
-  const isAuthenticated: boolean = Cookies.get('auth_status') === 'authenticated';
+  const { isAuthenticated } = useAuthData();
   const { data: response, isLoading, isError }: any = useListClinicSession({})
   const list = response?.data?.data || []
 

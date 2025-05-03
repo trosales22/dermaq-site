@@ -4,11 +4,12 @@ import { CustomerFormData, customerSchema } from 'schemas/customerSchema';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
 import { useMyProfile, useUpdateMyProfile } from 'hooks/auth';
-import { toast } from 'react-toastify';
-import Cookies from "js-cookie";
+import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSetAuthField } from 'hooks/useSetAuthField';
 
 const ProfilePage: React.FC = () => {
+    const { setAuthField } = useSetAuthField();
     const queryClient = useQueryClient()
     const {
         watch,
@@ -34,10 +35,10 @@ const ProfilePage: React.FC = () => {
 
     const { mutate: updateMyProfile, isPending: isUpdateMyProfileLoading } = useUpdateMyProfile({
         onSuccess: () => {
-            toast.info("Profile updated successfully.")
+            toast.success("Profile updated successfully.")
 
-            Cookies.set('firstname', watch().firstname)
-            Cookies.set('lastname', watch().lastname)
+            setAuthField('firstname', watch().firstname)
+            setAuthField('lastname', watch().lastname)
 
             queryClient.invalidateQueries({ queryKey: ['MY_PROFILE'] })
             reset()
