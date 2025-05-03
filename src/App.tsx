@@ -1,6 +1,6 @@
-import './App.css'
-import Wrapper from 'components/Wrapper'
-import { Route, Routes } from "react-router-dom";
+import './App.css';
+import Wrapper from 'components/Wrapper';
+import { Route, Routes } from 'react-router-dom';
 import LandingPage from 'pages/Landing';
 import SessionDetailPage from 'pages/SessionDetail';
 import LoginPage from 'pages/Login';
@@ -16,7 +16,7 @@ function App() {
     <Wrapper>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        
+
         <Route element={<UnauthenticatedRoute />}>
           <Route path="/signin" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -32,7 +32,7 @@ function App() {
 
       <Toaster />
     </Wrapper>
-  )
+  );
 }
 
 export default App;

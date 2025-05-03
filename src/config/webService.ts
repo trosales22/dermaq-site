@@ -1,4 +1,9 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig, AxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosRequestConfig,
+} from 'axios';
 import { useAuthData } from 'hooks/useAuthData';
 import { useDebouncedToast } from 'hooks/useDebounceToast';
 import { useRemoveAuthField } from 'hooks/useRemoveAuthField';
@@ -20,7 +25,7 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
-  
+
   return config;
 });
 
@@ -31,14 +36,15 @@ axios.interceptors.response.use(
     const { debouncedToastInfo, debouncedToastError } = useDebouncedToast();
     const { removeAuthField } = useRemoveAuthField();
 
-    const errorMessage: any = get(error, 'response.data.errors[0].message') || get(error, 'response.data.message');
+    const errorMessage: any =
+      get(error, 'response.data.errors[0].message') || get(error, 'response.data.message');
     const errorCode = error?.response?.status;
     const config = error.config as CustomAxiosRequestConfig;
 
     if (config?.disableToast) {
       return Promise.reject({
-        message: errorMessage
-      })
+        message: errorMessage,
+      });
     }
 
     if (['Token expired.', 'Token has expired.'].includes(errorMessage)) {
@@ -67,5 +73,5 @@ axios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );

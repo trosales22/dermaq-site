@@ -8,7 +8,10 @@ interface QueueItem {
 
 type QueueCallback = (queues: QueueItem[]) => void;
 
-export const listenToQueueData = (csRefno: string | undefined, callback: QueueCallback): () => void => {
+export const listenToQueueData = (
+  csRefno: string | undefined,
+  callback: QueueCallback,
+): (() => void) => {
   if (!csRefno) return () => {};
 
   const queueRef = ref(database, `queues/${csRefno}`);
@@ -21,7 +24,7 @@ export const listenToQueueData = (csRefno: string | undefined, callback: QueueCa
       const queueArray: QueueItem[] = Object.entries(data)
         .map(([queueNo, details]) => ({
           queueNo: parseInt(queueNo, 10),
-          ...details as object,
+          ...(details as object),
         }))
         .sort((a, b) => a.queueNo - b.queueNo);
 

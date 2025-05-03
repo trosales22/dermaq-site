@@ -12,11 +12,10 @@ const Navbar: React.FC = () => {
   const fullName = `${firstname} ${lastname}`;
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
- 
 
   const logoutMutation = useLogoutMutation({
     onSuccess: () => {
-      toast.success("Successfully logged out.");
+      toast.success('Successfully logged out.');
 
       removeAuthField('auth_status');
       removeAuthField('firstname');
@@ -24,9 +23,9 @@ const Navbar: React.FC = () => {
       removeAuthField('token');
       removeAuthField('role');
 
-      navigate("/signin");
+      navigate('/signin');
     },
-    onError: () => {}
+    onError: () => {},
   });
 
   const onLogoutHandler = () => {
@@ -37,7 +36,9 @@ const Navbar: React.FC = () => {
     <nav className="bg-blue-500 text-white p-4 w-full">
       <div className="flex justify-between items-center container mx-auto">
         <div className="text-2xl font-bold">
-          <Link to="/" className="text-white">DermaQ</Link>
+          <Link to="/" className="text-white">
+            DermaQ
+          </Link>
         </div>
 
         {/* Hamburger Menu for Mobile */}
@@ -54,18 +55,24 @@ const Navbar: React.FC = () => {
               <div className="flex items-center space-x-2">
                 Welcome,&nbsp;<span className="text-white font-bold">{fullName}</span>
               </div>
-              <Link to="/reservations" className="hover:text-gray-300">Reservations</Link>
-              <Link to="/profile" className="hover:text-gray-300">My Profile</Link>
+              <Link to="/reservations" className="hover:text-gray-300">
+                Reservations
+              </Link>
+              <Link to="/profile" className="hover:text-gray-300">
+                My Profile
+              </Link>
 
-              <button 
-                onClick={onLogoutHandler} 
+              <button
+                onClick={onLogoutHandler}
                 className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold"
               >
                 Logout
               </button>
             </>
           ) : (
-            <Link to="/signin" className="hover:text-gray-300">Sign In</Link>
+            <Link to="/signin" className="hover:text-gray-300">
+              Sign In
+            </Link>
           )}
         </div>
       </div>
@@ -76,18 +83,24 @@ const Navbar: React.FC = () => {
           {isAuthenticated ? (
             <>
               <div className="text-white font-bold">Welcome, {fullName}</div>
-              <Link to="/reservations" className="block hover:text-gray-300">Reservations</Link>
-              <Link to="/profile" className="block hover:text-gray-300">My Profile</Link>
+              <Link to="/reservations" className="block hover:text-gray-300">
+                Reservations
+              </Link>
+              <Link to="/profile" className="block hover:text-gray-300">
+                My Profile
+              </Link>
 
-              <button 
-                onClick={onLogoutHandler} 
+              <button
+                onClick={onLogoutHandler}
                 className="w-full text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-bold mt-2"
               >
                 Logout
               </button>
             </>
           ) : (
-            <Link to="/signin" className="block hover:text-gray-300">Sign In</Link>
+            <Link to="/signin" className="block hover:text-gray-300">
+              Sign In
+            </Link>
           )}
         </div>
       )}

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
 interface ModalProps {
   id: string;
@@ -6,11 +6,11 @@ interface ModalProps {
   children: React.ReactNode;
   closeButton?: boolean;
   closeOnBackdrop?: boolean;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "full";
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full';
   responsive?: boolean;
   isOpen: boolean;
   onClose: () => void;
-  headerColor?: "blue" | "red" | "green" | "gray" | "orange";
+  headerColor?: 'blue' | 'red' | 'green' | 'gray' | 'orange';
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,11 +19,11 @@ const Modal: React.FC<ModalProps> = ({
   children,
   closeButton = true,
   closeOnBackdrop = true,
-  size = "md",
+  size = 'md',
   responsive = false,
   isOpen,
   onClose,
-  headerColor = "gray",
+  headerColor = 'gray',
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
@@ -44,39 +44,39 @@ const Modal: React.FC<ModalProps> = ({
     };
 
     const modalElement = modalRef.current;
-    modalElement?.addEventListener("close", handleModalClose);
+    modalElement?.addEventListener('close', handleModalClose);
 
-    return () => modalElement?.removeEventListener("close", handleModalClose);
+    return () => modalElement?.removeEventListener('close', handleModalClose);
   }, [onClose]);
 
   // Define header colors
   const headerBgColor = {
-    blue: "bg-blue-500 text-white",
-    red: "bg-red-500 text-white",
-    green: "bg-green-500 text-white",
-    gray: "bg-gray-200 text-gray-900",
-    orange: "bg-orange-400 text-white"
+    blue: 'bg-blue-500 text-white',
+    red: 'bg-red-500 text-white',
+    green: 'bg-green-500 text-white',
+    gray: 'bg-gray-200 text-gray-900',
+    orange: 'bg-orange-400 text-white',
   }[headerColor];
 
   // Define width classes based on size
   const widthClass = {
-    'sm': "max-w-sm",
-    'md': "max-w-md",
-    'lg': "max-w-lg",
-    'xl': "max-w-2xl",
-    '2xl': "max-w-3xl",
-    '3xl': "max-w-4xl",
-    '4xl': "max-w-5xl",
-    '5xl': "max-w-6xl",
-    '6xl': "max-w-7xl",
-    'full': "w-full"
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-2xl',
+    '2xl': 'max-w-3xl',
+    '3xl': 'max-w-4xl',
+    '4xl': 'max-w-5xl',
+    '5xl': 'max-w-6xl',
+    '6xl': 'max-w-7xl',
+    full: 'w-full',
   }[size];
 
   return (
     <dialog
       id={id}
       ref={modalRef}
-      className={`modal ${responsive ? "modal-bottom sm:modal-middle" : ""}`}
+      className={`modal ${responsive ? 'modal-bottom sm:modal-middle' : ''}`}
     >
       <div className={`modal-box ${widthClass} p-0 overflow-hidden`}>
         <div className={`p-4 ${headerBgColor} flex justify-between items-center`}>

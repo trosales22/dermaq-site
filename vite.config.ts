@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import tailwindcss from "@tailwindcss/vite"
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from "vite-tsconfig-paths";
-import path from "path";
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import path from 'path';
 
 export default defineConfig({
   plugins: [tailwindcss(), react(), tsconfigPaths()],
@@ -18,7 +18,7 @@ export default defineConfig({
       hooks: path.resolve('src/hooks'),
       endpoints: path.resolve('src/endpoints'),
       utils: path.resolve('src/utils'),
-      transformers: path.resolve('src/transformers')
-    }
-  }
-})
+      transformers: path.resolve('src/transformers'),
+    },
+  },
+});

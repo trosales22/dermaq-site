@@ -6,19 +6,23 @@ type MyProfileParams = {
   queryOptions?: UseQueryOptions;
 };
 
-export const useLoginMutation = (mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>) => {
+export const useLoginMutation = (
+  mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>,
+) => {
   return useMutation({
     mutationKey: ['LOGIN'],
     mutationFn: (payload: any) => fns.login(payload),
-    ...mutationOptions
+    ...mutationOptions,
   });
 };
 
-export const useLogoutMutation = (mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, unknown>) => {
+export const useLogoutMutation = (
+  mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, unknown>,
+) => {
   return useMutation({
     mutationKey: ['LOGOUT'],
     mutationFn: () => fns.logout(),
-    ...mutationOptions
+    ...mutationOptions,
   });
 };
 
@@ -26,22 +30,26 @@ export const useMyProfile = ({ queryOptions }: MyProfileParams) => {
   return useQuery({
     queryKey: ['MY_PROFILE'],
     queryFn: () => fns.myProfile(),
-    ...queryOptions
+    ...queryOptions,
   });
 };
 
-export const useUpdateMyProfile = (mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>) => {
+export const useUpdateMyProfile = (
+  mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>,
+) => {
   return useMutation({
     mutationKey: ['UPDATE_MY_PROFILE'],
     mutationFn: (payload) => fns.updateMyProfile(payload),
-    ...mutationOptions
+    ...mutationOptions,
   });
 };
 
-export const useRegisterCustomer = (mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>) => {
+export const useRegisterCustomer = (
+  mutationOptions?: UseMutationOptions<AxiosResponse<any>, unknown, any>,
+) => {
   return useMutation({
     mutationKey: ['REGISTER_CUSTOMER'],
     mutationFn: (payload) => fns.registerCustomer(payload),
-    ...mutationOptions
+    ...mutationOptions,
   });
 };

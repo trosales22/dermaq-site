@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { AlertTriangle } from 'lucide-react';
 import { Button, Modal } from './ui/components';
 import { useReserveSlotMutation } from 'hooks/reservation';
-import { useWindowSize } from 'react-use'
-import Confetti from 'react-confetti'
+import { useWindowSize } from 'react-use';
+import Confetti from 'react-confetti';
 import { useAuthData } from 'hooks/useAuthData';
 
 const SessionList: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
   const [generatedQueueNo, setGeneratedQueueNo] = useState(0);
@@ -17,42 +17,42 @@ const SessionList: React.FC = () => {
   const [openSuccessReserve, setOpenSuccessReserve] = useState(false);
   const [selectedClinicSession, setSelectedSession] = useState<any>({
     id: null,
-    refno: null
-  })
+    refno: null,
+  });
   const { isAuthenticated } = useAuthData();
-  const { data: response, isLoading, isError }: any = useListClinicSession({})
-  const list = response?.data?.data || []
+  const { data: response, isLoading, isError }: any = useListClinicSession({});
+  const list = response?.data?.data || [];
 
   const onShowReserveSuccessfulHandler = () => {
-    setShowConfetti(true)
-    setOpenSuccessReserve(true)
-  }
+    setShowConfetti(true);
+    setOpenSuccessReserve(true);
+  };
 
   const { mutate: reserveSlot, isPending: isReserveSlotLoading } = useReserveSlotMutation({
     onSuccess: (res) => {
-      setGeneratedQueueNo(res?.data?.details?.queue_number)
-      setOpenReserveConfirmation(false)
-      onShowReserveSuccessfulHandler()
+      setGeneratedQueueNo(res?.data?.details?.queue_number);
+      setOpenReserveConfirmation(false);
+      onShowReserveSuccessfulHandler();
       setShowConfetti(true);
     },
     onError: () => {
-      setOpenReserveConfirmation(false)
-    }
+      setOpenReserveConfirmation(false);
+    },
   });
 
   const onShowReserveConfirmationHandler = (payload: any) => {
     setSelectedSession({
       id: payload.id,
-      refno: payload.refno
-    })
-    setOpenReserveConfirmation(true)
-  }
+      refno: payload.refno,
+    });
+    setOpenReserveConfirmation(true);
+  };
 
   const onReserveSlotHandler = () => {
     reserveSlot({
-      clinic_session_id: selectedClinicSession.id
-    })
-  }
+      clinic_session_id: selectedClinicSession.id,
+    });
+  };
 
   if (isLoading) {
     return (
@@ -65,7 +65,8 @@ const SessionList: React.FC = () => {
   if (isError) {
     return (
       <div className="flex justify-center items-center h-64 text-white-500 text-lg font-semibold">
-        <AlertTriangle />&nbsp;Failed to load sessions. Please try again later.
+        <AlertTriangle />
+        &nbsp;Failed to load sessions. Please try again later.
       </div>
     );
   }
@@ -80,14 +81,14 @@ const SessionList: React.FC = () => {
       </div>
     );
   }
-  
+
   return (
     <div>
       {showConfetti && <Confetti width={width} height={height} />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {list.map((item: any) => (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             className="card text-gray-700 bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
             onClick={() => navigate(`/sessions/${item?.attributes?.refno}`)}
           >
@@ -98,29 +99,38 @@ const SessionList: React.FC = () => {
 
               <p className="text-sm italic text-black">{item?.attributes?.description}</p>
 
-              <div className="mt-4 flex flex-col text-left text-sm text-black">    
+              <div className="mt-4 flex flex-col text-left text-sm text-black">
                 <p>
-                  <b>📅 {`${item?.attributes?.formatted_session_date} (${item?.attributes?.formatted_start_time} - ${item?.attributes?.formatted_end_time})`}</b><br/>
-                  <b>Max Slot:</b> {item?.attributes?.max_slots || 0}<br/>
-                  <b>Remaining Slot:</b> <span className='text-red-600'>{item?.attributes?.remaining_slots || 0}</span><br/>
+                  <b>
+                    📅{' '}
+                    {`${item?.attributes?.formatted_session_date} (${item?.attributes?.formatted_start_time} - ${item?.attributes?.formatted_end_time})`}
+                  </b>
+                  <br />
+                  <b>Max Slot:</b> {item?.attributes?.max_slots || 0}
+                  <br />
+                  <b>Remaining Slot:</b>{' '}
+                  <span className="text-red-600">{item?.attributes?.remaining_slots || 0}</span>
+                  <br />
                 </p>
               </div>
 
               {isAuthenticated ? (
-                <button 
+                <button
                   className="mt-4 btn bg-blue-500 border-gray-300 text-white hover:bg-blue-800 transition"
                   onClick={(event) => {
                     event.stopPropagation();
                     onShowReserveConfirmationHandler({
                       id: item?.id,
-                      refno: item?.attributes?.refno
-                    })
+                      refno: item?.attributes?.refno,
+                    });
                   }}
                 >
                   Reserve Slot
                 </button>
               ) : (
-                <div className="mt-4 text-sm text-gray-500">You need to log in to reserve a slot.</div>
+                <div className="mt-4 text-sm text-gray-500">
+                  You need to log in to reserve a slot.
+                </div>
               )}
             </div>
           </div>
@@ -134,10 +144,19 @@ const SessionList: React.FC = () => {
         onClose={() => setOpenReserveConfirmation(false)}
         headerColor="blue"
       >
-        <p className='text-black text-left'>Are you sure you want to reserve this slot?</p>
+        <p className="text-black text-left">Are you sure you want to reserve this slot?</p>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="secondary" onClick={() => setOpenReserveConfirmation(false)}>No</Button>
-          <Button variant="primary" className="text-white" onClick={onReserveSlotHandler} disabled={isReserveSlotLoading}>{isReserveSlotLoading ? 'Reserving your slot..' : 'Yes'}</Button>
+          <Button variant="secondary" onClick={() => setOpenReserveConfirmation(false)}>
+            No
+          </Button>
+          <Button
+            variant="primary"
+            className="text-white"
+            onClick={onReserveSlotHandler}
+            disabled={isReserveSlotLoading}
+          >
+            {isReserveSlotLoading ? 'Reserving your slot..' : 'Yes'}
+          </Button>
         </div>
       </Modal>
 
@@ -149,18 +168,24 @@ const SessionList: React.FC = () => {
         headerColor="blue"
         closeOnBackdrop={false}
       >
-        <p className='text-black text-left'>
-          You successfully reserved a slot 🎉🎉
-        </p>
+        <p className="text-black text-left">You successfully reserved a slot 🎉🎉</p>
         <p className="text-2xl font-bold text-center text-blue-600 mt-2">
           Queue Number: {generatedQueueNo}
         </p>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="secondary" onClick={() => setOpenSuccessReserve(false)}>Close</Button>
-          <Button variant="primary" className="text-white" onClick={() => {
-            setShowConfetti(false)
-            navigate(`/sessions/${selectedClinicSession.refno}`)
-          }}>Monitor My Number</Button>
+          <Button variant="secondary" onClick={() => setOpenSuccessReserve(false)}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            className="text-white"
+            onClick={() => {
+              setShowConfetti(false);
+              navigate(`/sessions/${selectedClinicSession.refno}`);
+            }}
+          >
+            Monitor My Number
+          </Button>
         </div>
       </Modal>
     </div>

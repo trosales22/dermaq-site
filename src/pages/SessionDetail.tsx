@@ -12,19 +12,17 @@ interface QueueItem {
 
 const SessionDetailPage: React.FC = () => {
   const { isAuthenticated } = useAuthData();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { refno } = useParams<{ refno: string }>();
 
-  const { data: response, isLoading, isError }: any = useShowClinicSessionByRefNo({refno})
-  const sessionDetail = response?.data?.data?.attributes || null
+  const { data: response, isLoading, isError }: any = useShowClinicSessionByRefNo({ refno });
+  const sessionDetail = response?.data?.data?.attributes || null;
 
-  const { 
-    data: reservedQueueListResponse
-  }: any = useListReservedQueue({
-    refno
-  })
+  const { data: reservedQueueListResponse }: any = useListReservedQueue({
+    refno,
+  });
 
-  const reservedQueueList = reservedQueueListResponse?.data?.data || []
+  const reservedQueueList = reservedQueueListResponse?.data?.data || [];
 
   const [queue, setQueue] = useState<QueueItem[]>([]);
 
@@ -46,7 +44,9 @@ const SessionDetailPage: React.FC = () => {
       <div className="flex justify-center items-center h-screen w-full bg-gray-100 relative">
         <div className="absolute inset-0 bg-white bg-opacity-80 flex flex-col justify-center items-center">
           <span className="loading loading-spinner loading-lg text-primary"></span>
-          <p className="mt-4 text-lg font-semibold text-gray-700">Loading sessions, please wait...</p>
+          <p className="mt-4 text-lg font-semibold text-gray-700">
+            Loading sessions, please wait...
+          </p>
         </div>
       </div>
     );
@@ -56,9 +56,12 @@ const SessionDetailPage: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-screen w-full bg-gray-100 relative">
         <div className="absolute inset-0 bg-red-100 bg-opacity-80 flex flex-col justify-center items-center border border-red-400 text-red-700 p-6">
-          <AlertTriangle /> <span className="text-lg font-semibold">Failed to load clinic session. Please try again later.</span>
-          <button 
-            className="mt-4 btn btn-outline btn-primary hover:bg-primary hover:text-white transition" 
+          <AlertTriangle />{' '}
+          <span className="text-lg font-semibold">
+            Failed to load clinic session. Please try again later.
+          </span>
+          <button
+            className="mt-4 btn btn-outline btn-primary hover:bg-primary hover:text-white transition"
             onClick={() => navigate('/')}
           >
             Go Back
@@ -80,28 +83,37 @@ const SessionDetailPage: React.FC = () => {
           <div className="bg-white bg-opacity-70 p-8 rounded-lg shadow-xl max-w-2xl mx-auto relative">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Session Details</h2>
             <ul className="text-gray-700 space-y-2">
-              <li><strong>Max Slot:</strong> {sessionDetail?.max_slots || 0}</li>
-              <li><strong>Date & Time:</strong> {`${sessionDetail?.session_date} (${sessionDetail?.formatted_start_time} - ${sessionDetail?.formatted_end_time})`}</li>
-              <li><strong>Status:</strong> {sessionDetail?.status?.label}</li>
+              <li>
+                <strong>Max Slot:</strong> {sessionDetail?.max_slots || 0}
+              </li>
+              <li>
+                <strong>Date & Time:</strong>{' '}
+                {`${sessionDetail?.session_date} (${sessionDetail?.formatted_start_time} - ${sessionDetail?.formatted_end_time})`}
+              </li>
+              <li>
+                <strong>Status:</strong> {sessionDetail?.status?.label}
+              </li>
             </ul>
           </div>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
             {isAuthenticated && (
               <div className="p-6 bg-gradient-to-b from-gray-200 to-gray-300 rounded-lg shadow-xl transform transition-all duration-300 hover:scale-105">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Reserved Queue Numbers</h3>
-    
-              <div className="space-y-2">
-                {reservedQueueList.map((item: any, index: number) => {
-                  return <div
-                    key={index}
-                    className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block"
-                  >
-                    #{item?.attributes?.queue_number}
-                  </div>
-                })}
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Reserved Queue Numbers</h3>
+
+                <div className="space-y-2">
+                  {reservedQueueList.map((item: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="text-4xl font-bold text-gray-800 py-2 px-8 border-4 border-gray-300 rounded-lg inline-block"
+                      >
+                        #{item?.attributes?.queue_number}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
             )}
 
             <div className="p-6 bg-gradient-to-b from-gray-200 to-gray-300 rounded-lg shadow-xl transform transition-all duration-300 hover:scale-105">
@@ -119,7 +131,10 @@ const SessionDetailPage: React.FC = () => {
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Next Queue Numbers</h3>
               <div className="text-lg text-gray-800 space-y-2">
                 {nextQueueNumbers.map((num, index) => (
-                  <div key={index} className="py-2 px-8 border-2 border-gray-300 rounded-lg inline-block">
+                  <div
+                    key={index}
+                    className="py-2 px-8 border-2 border-gray-300 rounded-lg inline-block"
+                  >
                     #{num}
                   </div>
                 ))}
